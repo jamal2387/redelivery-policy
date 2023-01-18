@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  activemq:
+    image: rmohr/activemq
+    container_name: 'activemq'
+    ports:
+      - '61616:61616'
+      - '8161:8161'
+  redelivery-policy:
+    build: .
+    ports:
+      - '8080:8080'
+    environment:
+      ACTIVEMQ_BROKER_URL: activemq:61616
+    depends_on:
+      - activemq
+networks:
+  default:
+    name: redelivery-policy
