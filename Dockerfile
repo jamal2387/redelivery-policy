@@ -4,7 +4,7 @@ COPY . $APP_HOME
 WORKDIR $APP_HOME
 RUN gradle build
 
-FROM openjdk:8-jre-sllim
+FROM openjdk:8-jre-slim
 EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /usr/app/build/libs/*.jar /app/redelivery-policy.jar
