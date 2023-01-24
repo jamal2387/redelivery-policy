@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activemq-deployment
+  labels:
+    app: activemq
+spec:
+  selector:
+    matchLabels:
+      app: activemq
+  template:
+    metadata:
+      labels:
+        app: activemq
+    spec:
+      containers:
+        - name: activemq
+          imagePullPolicy: Never
+          image: rmohr/activemq
+          ports:
+            - containerPort: 61616
+              name: activemq
+              protocol: TCP
+            - containerPort: 8161
+              name: webconsole
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: activemq-web-console
+  labels:
+    app: activemq
+spec:
+  selector:
+    app: activemq
+  ports:
+    - port: 8161
+      protocol: TCP
+      targetPort: 8161
+  clusterIP: None
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: activemq-service
+  labels:
+    app: activemq
+spec:
+  ports:
+    - port: 61616
+      targetPort: 61616
+  selector:
+    app: activemq
+  clusterIP: None

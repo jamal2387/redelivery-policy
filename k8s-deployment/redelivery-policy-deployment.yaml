@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redelivery-policy-deployment
+spec:
+  selector:
+    matchLabels:
+      app: redelivery-policy
+  template:
+    metadata:
+      labels:
+        app: redelivery-policy
+    spec:
+      imagePullSecrets:
+        - name: dockersecret
+      containers:
+        - name: redelivery-policy
+          imagePullPolicy: Never
+          image: 1037ed9236803abe1d5532533510add6bcdb03a46cbde52c38714f3d931ebf08
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ACTIVEMQ_BROKER_HOST
+              value: activemq
+            - name: ACTIVEMQ_BROKER_PORT
+              value: "61616"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redelivery-service-service
+spec:
+  selector:
+    app: redelivery-policy
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  type: NodePort
